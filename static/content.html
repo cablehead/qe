@@ -28,6 +28,9 @@
       <button id="continue-button" onclick="continueClicked()">Continue</button>
     </div>
     <script>
+      function b64ToUtf8(str) {
+        return decodeURIComponent(escape(window.atob(str)));
+      }
       function continueClicked() {
         const content = document.getElementById("content").value;
         window.ipc.postMessage(content);

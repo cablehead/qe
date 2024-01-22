@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 wry = { version = "0.35.2", features = ["os-webview"] }
 tao = { version = "0.24", default-features = false, features = [ "rwh_05" ] }
+base64 = "0.21.7"
