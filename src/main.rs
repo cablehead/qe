@@ -12,7 +12,8 @@ use wry::WebViewBuilder;
 fn main() -> wry::Result<()> {
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
-        .with_decorations(false)
+        // .with_decorations(false)
+        // .with_transparent(true)
         .build(&event_loop)
         .unwrap();
 
@@ -43,7 +44,7 @@ fn main() -> wry::Result<()> {
         // And the last is in html.
         .with_html(
             r#"<html>
-          <body style="background-color:rgba(87,87,87,0.5);"></body>
+          <body style="background-color:rgba(87,87,87,0.0);"></body>
           <script>
             window.onload = function() {
               document.body.innerText = `hello, ${navigator.userAgent}`;
