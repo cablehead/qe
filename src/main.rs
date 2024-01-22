@@ -1,7 +1,3 @@
-// Copyright 2020-2023 Tauri Programme within The Commons Conservancy
-// SPDX-License-Identifier: Apache-2.0
-// SPDX-License-Identifier: MIT
-
 use tao::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -12,8 +8,6 @@ use wry::WebViewBuilder;
 fn main() -> wry::Result<()> {
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
-        // .with_decorations(false)
-        // .with_transparent(true)
         .build(&event_loop)
         .unwrap();
 
@@ -33,25 +27,23 @@ fn main() -> wry::Result<()> {
     )))]
     let builder = {
         use tao::platform::unix::WindowExtUnix;
-        use wry::WebViewBuilderExtUnix;
+        use wry::platform::unix::WebViewBuilderExtUnix;
         let vbox = window.default_vbox().unwrap();
         WebViewBuilder::new_gtk(vbox)
     };
 
-    let _webview = builder
-        // The second is on webview...
-        // .with_transparent(true)
-        // And the last is in html.
+    let webview = builder
         .with_html(
             r#"<html>
-          <body style="background-color:rgba(87,87,87,0.0);"></body>
-          <script>
-            window.onload = function() {
-              document.body.innerText = `hello, ${navigator.userAgent}`;
-            };
-          </script>
+          <body>
+            <button onclick="window.ipc.postMessage('Button clicked')">Click me</button>
+          </body>
         </html>"#,
         )?
+        .with_ipc_handler(|message| {
+            println!("IPC message received: {}", message);
+            std::process::exit(0);
+        })
         .build()?;
 
     event_loop.run(move |event, _, control_flow| {
