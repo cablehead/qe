@@ -7,9 +7,7 @@ use wry::WebViewBuilder;
 
 fn main() -> wry::Result<()> {
     let event_loop = EventLoop::new();
-    let window = WindowBuilder::new()
-        .build(&event_loop)
-        .unwrap();
+    let window = WindowBuilder::new().build(&event_loop).unwrap();
 
     #[cfg(any(
         target_os = "windows",
@@ -32,16 +30,10 @@ fn main() -> wry::Result<()> {
         WebViewBuilder::new_gtk(vbox)
     };
 
-    let webview = builder
-        .with_html(
-            r#"<html>
-          <body>
-            <button onclick="window.ipc.postMessage('Button clicked')">Click me</button>
-          </body>
-        </html>"#,
-        )?
+    let _webview = builder
+        .with_html(include_str!("../static/content.html"))?
         .with_ipc_handler(|message| {
-            println!("IPC message received: {}", message);
+            println!("Textarea content received: {}", message);
             std::process::exit(0);
         })
         .build()?;

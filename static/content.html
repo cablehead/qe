@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      textarea {
+        flex: 1;
+        resize: none; /* Prevent resizing */
+      }
+      #status-bar {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px;
+      }
+      #continue-button {
+        padding: 5px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="content"></textarea>
+    <div id="status-bar">
+      <button id="continue-button" onclick="continueClicked()">Continue</button>
+    </div>
+    <script>
+      function continueClicked() {
+        const content = document.getElementById("content").value;
+        window.ipc.postMessage(content);
+      }
+    </script>
+  </body>
+</html>
