@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 tao = "0.24.1"
-wry = "0.35.2"
+wry = { version = "0.35.2", features = ["os-webview"] }

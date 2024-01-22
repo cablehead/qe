@@ -1,34 +1,50 @@
-use wry::{
-    application::{
-        event::{Event, StartCause, WindowEvent},
-        event_loop::{ControlFlow, EventLoop},
-        window::WindowBuilder,
-    },
-    webview::WebViewBuilder,
+// Copyright 2020-2023 Tauri Programme within The Commons Conservancy
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
+
+use tao::{
+  event::{Event, WindowEvent},
+  event_loop::{ControlFlow, EventLoop},
+  window::WindowBuilder,
 };
+use wry::WebViewBuilder;
 
-fn main() -> Result<(), wry::Error> {
-    let event_loop = EventLoop::new();
-    let window = WindowBuilder::new()
-        .with_title("Hello World")
-        .build(&event_loop)?;
+fn main() -> wry::Result<()> {
+  let event_loop = EventLoop::new();
+  let window = WindowBuilder::new().build(&event_loop).unwrap();
 
-    let _webview = WebViewBuilder::new(window)
-        .with_url("https://tauri.app")?
-        .build()?;
+  #[cfg(any(
+    target_os = "windows",
+    target_os = "macos",
+    target_os = "ios",
+    target_os = "android"
+  ))]
+  let builder = WebViewBuilder::new(&window);
 
-    event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Wait;
+  #[cfg(not(any(
+    target_os = "windows",
+    target_os = "macos",
+    target_os = "ios",
+    target_os = "android"
+  )))]
+  let builder = {
+    use tao::platform::unix::WindowExtUnix;
+    use wry::WebViewBuilderExtUnix;
+    let vbox = window.default_vbox().unwrap();
+    WebViewBuilder::new_gtk(vbox)
+  };
 
-        match event {
-            Event::NewEvents(StartCause::Init) => println!("Wry has started!"),
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                ..
-            } => *control_flow = ControlFlow::Exit,
-            _ => (),
-        }
-    });
+  let _webview = builder.with_url("https://tauri.app")?.build()?;
 
-    Ok(())
+  event_loop.run(move |event, _, control_flow| {
+    *control_flow = ControlFlow::Wait;
+
+    if let Event::WindowEvent {
+      event: WindowEvent::CloseRequested,
+      ..
+    } = event
+    {
+      *control_flow = ControlFlow::Exit
+    }
+  });
 }
