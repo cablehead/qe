@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tao = "0.24.1"
 wry = { version = "0.35.2", features = ["os-webview"] }
+tao = { version = "0.24", default-features = false, features = [ "rwh_05" ] }
